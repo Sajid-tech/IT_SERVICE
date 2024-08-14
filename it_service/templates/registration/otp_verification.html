@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}
+OTP Verification
+{% endblock %}
+
+{% block content %}
+<h2>OTP Verification</h2>
+<form method="post">
+    {% csrf_token %}
+    {% if error %}
+    <p class="text-danger">{{ error }}</p>
+    {% endif %}
+    <label for="otp">Enter OTP:</label>
+    <input type="text" id="otp" name="otp" required>
+    <button class="btn btn-primary" type="submit">Verify OTP</button>
+</form>
+{% endblock %}

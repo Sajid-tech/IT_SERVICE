@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>{% if form.instance.pk %} Edit Service {% else%} Create Service {% endif %}</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">
+        {% if form.instance.pk %} save edit service {% else%}Sumbit{% endif %}
+    </button>
+    <a href="{% url 'home'%}">Back to Service home</a>
+</form>
+{% endblock %}

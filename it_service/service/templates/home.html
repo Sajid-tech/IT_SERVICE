@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2 class="text-center mb-4">Services</h2>
+
+{% if user.is_authenticated %}
+  <a class="btn btn-primary mb-4" href="{% url 'create_service' %}">Create a Service</a>
+{% endif %}
+
+<!-- Section for Active Services -->
+{% if active_services %}
+  <h3 class="mb-3">Active Services</h3>
+  <div class="container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for service in active_services %}
+        <div class="col">
+          <div class="card h-100">
+            <img src="{{ service.image.url }}" class="card-img-top" alt="Service Image">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title">{{ service.name }}</h3>
+              <p class="card-text">Package: {{ service.package }}</p>
+              <p class="card-text">Price: ₹{{ service.total_price|floatformat:2 }} (Incl. Tax)</p>
+              <div class="mt-auto">
+                
+                {% if user.is_authenticated %}
+                  <div class="btn-group mt-2 w-100" role="group" aria-label="Service Actions">
+                    <a href="{% url 'edit_service' service.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'delete_service' service.id %}" class="btn btn-danger">Delete</a>
+                    <form method="POST" action="{% url 'toggle_active' service.id %}" class="d-inline">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-warning">Deactivate</button>
+                    </form>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% else %}
+  <p>No active services available.</p>
+{% endif %}
+
+<!-- Section for Inactive Services (Visible only to Authenticated Users) -->
+{% if user.is_authenticated %}
+  {% if inactive_services %}
+    <h3 class="mt-5 mb-3">Inactive Services</h3>
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for service in inactive_services %}
+          <div class="col">
+            <div class="card h-100">
+              <img src="{{ service.image.url }}" class="card-img-top" alt="Service Image">
+              <div class="card-body d-flex flex-column">
+                <h3 class="card-title">{{ service.name }}</h3>
+                <p class="card-text">Package: {{ service.package }}</p>
+                <p class="card-text">Price: ₹{{ service.price }} (Excl. Tax)</p>
+                <p class="card-text">Tax: {{ service.tax }}%</p>
+                <p class="card-text">Total: ₹{{ service.total_price|floatformat:2 }}</p>
+                <div class="mt-auto">
+                  <form method="POST" action="{% url 'toggle_active' service.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <a href="{% url 'edit_service' service.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'delete_service' service.id %}" class="btn btn-danger">Delete</a>
+                    <button type="submit" class="btn btn-success">Activate</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% else %}
+    <p>No inactive services available.</p>
+  {% endif %}
+{% endif %}
+
+{% endblock %}

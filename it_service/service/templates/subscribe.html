@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Subscribe to {{ service.name }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p>Total Price: {{ service.price }} + {{ service.tax }}% GST</p>
+    <button type="submit">Subscribe</button>
+</form>
+{% endblock %}

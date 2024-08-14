@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Payment for {{ service.name }}</h2>
+<p>Order ID: {{ payment.id }}</p>
+<p>Total Amount: ₹{{ subscription.price }}</p>
+
+<!-- Razorpay Payment Button -->
+<form action="{% url 'payment_callback' %}" method="POST">
+    {% csrf_token %}
+    <script src="https://checkout.razorpay.com/v1/checkout.js"
+            data-key="{{ razorpay_key }}"
+            data-amount="{{ payment.amount }}"
+            data-currency="INR"
+            data-order_id="{{ payment.id }}"
+            data-buttontext="Pay with Razorpay"
+            data-name="IT Services"
+            data-description="Subscription Payment"
+            data-image="https://your-logo-url.com/logo.png"
+            data-prefill.name="{{ request.user.username }}"
+            data-prefill.email="{{ request.user.email }}"
+            data-theme.color="#F37254">
+    </script>
+</form>
+
+{% endblock %}
